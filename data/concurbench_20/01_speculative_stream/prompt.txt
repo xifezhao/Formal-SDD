@@ -1,0 +1,52 @@
+Implement a Speculative Stream Controller for Retrieval-Augmented Generation.
+
+## Requirements:
+
+You need to implement a concurrent stream processor that can handle:
+
+1. **Asynchronous Document Arrival**: Documents arrive non-deterministically from a retrieval backend with varying latencies (100ms - 2000ms).
+
+2. **Speculative Generation**: The system should begin generating output tokens immediately, even before all retrieval results arrive.
+
+3. **Rollback Capability**: When new evidence contradicts previously generated content, the system must be able to retract (rollback) the incorrect prefix while preserving valid content.
+
+4. **Commit Protocol**: Stable content should transition from a mutable "draft" state to an immutable "committed" state after a hysteresis period.
+
+## Concurrency Constraints:
+
+- The retrieval stream and generation stream run in parallel threads.
+- Context updates must be atomic (no torn reads).
+- Rollback operations must be linearizable with respect to user-visible output.
+
+## Safety Properties:
+
+1. **No Committed Content is Retracted**: Once a chunk is committed, it cannot be rolled back.
+2. **Causality**: A token generated at time t can only depend on documents that arrived before time t.
+3. **Eventual Consistency**: If the retrieval stream quiesces, the output must converge to a consistent state.
+
+## Performance Goals:
+
+- Time-to-First-Token (TTFT) < 50ms
+- Rollback overhead < 20% of total generation time
+- Support for at least 10 concurrent retrieval requests
+
+Implement the controller as a state machine with the following interface:
+
+```python
+class SpeculativeStreamController:
+    def on_document_arrival(self, doc: Document) -> None:
+        """Called when a new document arrives from the retrieval backend."""
+        pass
+    
+    def generate_next_chunk(self) -> Optional[Chunk]:
+        """Generate the next chunk of output. Returns None if waiting for more data."""
+        pass
+    
+    def commit_if_stable(self) -> Optional[Chunk]:
+        """Commit a chunk if it has been stable for sufficient time."""
+        pass
+    
+    def rollback_to(self, index: int) -> None:
+        """Rollback the draft stream to the specified index."""
+        pass
+```

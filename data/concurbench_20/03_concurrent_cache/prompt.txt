@@ -1,0 +1,87 @@
+Implement a Thread-Safe LRU Cache with Read-Write Locks
+
+## Requirements:
+
+You need to implement a Least Recently Used (LRU) cache that supports concurrent access:
+
+1. **Concurrent Reads**: Multiple threads can read from the cache simultaneously without blocking each other.
+
+2. **Exclusive Writes**: Write operations (put, eviction) must have exclusive access.
+
+3. **LRU Eviction Policy**: When the cache reaches capacity, evict the least recently used entry.
+
+4. **Thread Safety**: All operations must be atomic and preserve cache invariants.
+
+## Concurrency Constraints:
+
+- Multiple readers can access cache simultaneously (read-read concurrency)
+- Writers must have exclusive access (no read-write or write-write concurrency)
+- Cache size must never exceed capacity
+- LRU order must be consistent across all threads
+
+## Safety Properties:
+
+1. **Capacity Bound**: Cache size ≤ max_capacity at all times
+2. **Key Uniqueness**: Each key appears at most once in the cache
+3. **Read-Write Consistency**: Readers never see partial updates
+4. **LRU Correctness**: Evicted item is always the least recently accessed
+
+## Liveness Properties:
+
+- **Non-Blocking Reads**: Readers do not starve due to writers
+- **Progress**: Write operations eventually complete
+
+## Interface:
+
+```python
+class LRUCache:
+    def __init__(self, capacity: int):
+        """Initialize cache with maximum capacity."""
+        pass
+    
+    def get(self, key: str) -> Optional[Any]:
+        """
+        Retrieve value for key. Updates access time.
+        Thread-safe with concurrent readers.
+        Returns None if key not found.
+        """
+        pass
+    
+    def put(self, key: str, value: Any) -> None:
+        """
+        Insert or update key-value pair.
+        Evicts LRU entry if at capacity.
+        Thread-safe with exclusive write access.
+        """
+        pass
+    
+    def delete(self, key: str) -> bool:
+        """
+        Remove key from cache. Returns True if key existed.
+        Thread-safe with exclusive write access.
+        """
+        pass
+    
+    def size(self) -> int:
+        """Return current number of entries in cache."""
+        pass
+    
+    def clear(self) -> None:
+        """Remove all entries from cache."""
+        pass
+```
+
+## Performance Requirements:
+
+- get() should be O(1) average case
+- put() should be O(1) average case (including eviction)
+- Minimal lock contention (use read-write locks, not exclusive locks for reads)
+- Support at least 1000 concurrent readers
+
+## Implementation Notes:
+
+Consider using:
+- A hash map for O(1) key lookup
+- A doubly-linked list to track LRU order
+- Read-write locks (threading.RLock) to allow concurrent reads
+- Atomic operations for moving items to the front of LRU list

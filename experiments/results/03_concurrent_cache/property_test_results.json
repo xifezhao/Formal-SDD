@@ -1,0 +1,8 @@
+{
+  "benchmark_id": "03_concurrent_cache",
+  "total_tests": 5,
+  "passed": 5,
+  "failed": 0,
+  "errors": 0,
+  "execution_time_s": 0.4990267753601074
+}

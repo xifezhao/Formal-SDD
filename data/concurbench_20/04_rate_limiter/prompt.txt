@@ -1,0 +1,98 @@
+Implement a Rate Limiter with Token Bucket Algorithm
+
+## Requirements:
+
+You need to implement a thread-safe rate limiter using the token bucket algorithm:
+
+1. **Token Generation**: Tokens are added to the bucket at a constant rate (tokens per second).
+
+2. **Token Consumption**: Each request consumes one or more tokens. If insufficient tokens are available, the request is either rejected or blocks until tokens are available.
+
+3. **Burst Handling**: The bucket has a maximum capacity, allowing short bursts of traffic up to the capacity limit.
+
+4. **Thread Safety**: Multiple threads can concurrently attempt to acquire tokens.
+
+## Concurrency Constraints:
+
+- Token generation and consumption must be atomic
+- No race conditions on bucket state
+- Time-based token replenishment must be accurate
+
+## Safety Properties:
+
+1. **Non-Negative Tokens**: Token count is always ≥ 0
+2. **Capacity Bound**: Token count never exceeds maximum capacity
+3. **Rate Enforcement**: Over any time window T, at most (rate × T + capacity) tokens can be consumed
+4. **Fairness**: Threads are not starved indefinitely (under reasonable load)
+
+## Interface:
+
+```python
+class TokenBucketRateLimiter:
+    def __init__(self, rate: float, capacity: int):
+        """
+        Initialize rate limiter.
+        
+        Args:
+            rate: Tokens added per second (e.g., 10.0 means 10 tokens/sec)
+            capacity: Maximum tokens in bucket
+        """
+        pass
+    
+    def acquire(self, tokens: int = 1) -> bool:
+        """
+        Try to acquire tokens immediately (non-blocking).
+        
+        Args:
+            tokens: Number of tokens to acquire
+            
+        Returns:
+            True if tokens were acquired, False if insufficient tokens
+        """
+        pass
+    
+    def acquire_blocking(self, tokens: int = 1, timeout: Optional[float] = None) -> bool:
+        """
+        Acquire tokens, blocking if necessary.
+        
+        Args:
+            tokens: Number of tokens to acquire
+            timeout: Maximum time to wait (None = wait forever)
+            
+        Returns:
+            True if tokens were acquired, False if timeout expired
+        """
+        pass
+    
+    def available_tokens(self) -> int:
+        """Return current number of available tokens."""
+        pass
+    
+    def reset(self) -> None:
+        """Reset bucket to full capacity."""
+        pass
+```
+
+## Algorithm Specification:
+
+**Token Bucket Logic:**
+- Maintain: `current_tokens`, `last_update_time`
+- On each operation:
+  1. Calculate time elapsed since last update
+  2. Add `elapsed_time * rate` tokens (up to capacity)
+  3. If tokens >= requested: consume and return success
+  4. Else: return failure (or block if blocking mode)
+
+## Performance Requirements:
+
+- acquire() should complete in O(1) time
+- Minimal lock contention (use fine-grained locking)
+- Accurate timing (precision within 1ms)
+- Support at least 10,000 requests per second
+
+## Use Cases:
+
+This is commonly used for:
+- API rate limiting (max N requests per second)
+- Traffic shaping in network systems
+- Resource quota management

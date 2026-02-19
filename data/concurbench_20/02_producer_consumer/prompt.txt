@@ -1,0 +1,88 @@
+Implement a Producer-Consumer Queue with Bounded Buffer
+
+## Requirements:
+
+You need to implement a thread-safe bounded buffer that supports concurrent producers and consumers:
+
+1. **Multiple Producers**: Multiple threads can concurrently enqueue items without data races.
+
+2. **Multiple Consumers**: Multiple threads can concurrently dequeue items safely.
+
+3. **Bounded Capacity**: The buffer has a fixed maximum capacity (e.g., 100 items).
+
+4. **Blocking Semantics**: 
+   - Producers block when the buffer is full
+   - Consumers block when the buffer is empty
+
+## Concurrency Constraints:
+
+- No data races on the internal buffer
+- Enqueue and dequeue operations must be atomic
+- The order of items must be FIFO (First-In-First-Out)
+- No lost updates or phantom reads
+
+## Safety Properties:
+
+1. **Mutual Exclusion**: No two threads can modify the same buffer slot simultaneously
+2. **Bounded Capacity**: The number of items in buffer never exceeds capacity
+3. **FIFO Order**: Items are retrieved in the order they were inserted (per producer)
+4. **No Buffer Overflow**: Producers cannot write beyond buffer capacity
+5. **No Buffer Underflow**: Consumers cannot read from an empty buffer
+
+## Liveness Properties:
+
+- **Progress**: If there are items in the buffer, a waiting consumer will eventually proceed
+- **Starvation Freedom**: No producer is starved indefinitely if there is space available
+
+## Interface:
+
+```python
+class BoundedBuffer:
+    def __init__(self, capacity: int):
+        """Initialize buffer with given capacity."""
+        pass
+    
+    def put(self, item: Any) -> None:
+        """
+        Add item to buffer. Blocks if buffer is full.
+        Thread-safe for multiple producers.
+        """
+        pass
+    
+    def get(self) -> Any:
+        """
+        Remove and return item from buffer. Blocks if buffer is empty.
+        Thread-safe for multiple consumers.
+        """
+        pass
+    
+    def try_put(self, item: Any, timeout: float = 0.0) -> bool:
+        """
+        Attempt to add item with timeout. Returns True if successful.
+        """
+        pass
+    
+    def try_get(self, timeout: float = 0.0) -> Optional[Any]:
+        """
+        Attempt to remove item with timeout. Returns None if timeout expires.
+        """
+        pass
+    
+    def size(self) -> int:
+        """Return current number of items in buffer."""
+        pass
+    
+    def is_empty(self) -> bool:
+        """Check if buffer is empty."""
+        pass
+    
+    def is_full(self) -> bool:
+        """Check if buffer is full."""
+        pass
+```
+
+## Performance Constraints:
+
+- put() and get() operations should complete in O(1) time
+- Minimal lock contention (prefer condition variables over busy-waiting)
+- Support at least 100 concurrent producer/consumer threads

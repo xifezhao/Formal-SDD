@@ -1,0 +1,8 @@
+{
+  "benchmark_id": "02_producer_consumer",
+  "total_tests": 4,
+  "passed": 4,
+  "failed": 0,
+  "errors": 0,
+  "execution_time_s": 0.5930678844451904
+}

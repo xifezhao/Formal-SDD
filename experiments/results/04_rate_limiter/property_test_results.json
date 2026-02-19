@@ -1,0 +1,8 @@
+{
+  "benchmark_id": "04_rate_limiter",
+  "total_tests": 6,
+  "passed": 6,
+  "failed": 0,
+  "errors": 0,
+  "execution_time_s": 18.907552003860474
+}

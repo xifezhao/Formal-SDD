@@ -1,0 +1,67 @@
+{
+  "benchmark_id": "02_producer_consumer",
+  "method": "formal_sdd_real",
+  "success": false,
+  "iterations": 5,
+  "total_time_s": 3575.380786895752,
+  "verification_attempts": 5,
+  "generated_code": "\n            ```json\n            {\n                \"program\": \"class VerifiedStream: ...\",\n                \"proof\": \"theorem verified_stream_mono : ... := by { structural induction }\"\n            }\n            ```\n            ",
+  "iteration_log": [
+    {
+      "step": "formalization",
+      "time": 600.2327868938446,
+      "output": "Extracted constraints: Monotonicity, Liveness, Safety properties."
+    },
+    {
+      "step": "synthesis_1",
+      "time": 1193.2517960071564,
+      "code_length": 226
+    },
+    {
+      "step": "verification_1",
+      "time": 1193.252289056778,
+      "verified": false
+    },
+    {
+      "step": "synthesis_2",
+      "time": 1786.5426156520844,
+      "code_length": 226
+    },
+    {
+      "step": "verification_2",
+      "time": 1786.5432088375092,
+      "verified": false
+    },
+    {
+      "step": "synthesis_3",
+      "time": 2383.6693880558014,
+      "code_length": 226
+    },
+    {
+      "step": "verification_3",
+      "time": 2383.669817686081,
+      "verified": false
+    },
+    {
+      "step": "synthesis_4",
+      "time": 2980.097562789917,
+      "code_length": 226
+    },
+    {
+      "step": "verification_4",
+      "time": 2980.0980648994446,
+      "verified": false
+    },
+    {
+      "step": "synthesis_5",
+      "time": 3575.380390882492,
+      "code_length": 226
+    },
+    {
+      "step": "verification_5",
+      "time": 3575.380675792694,
+      "verified": false
+    }
+  ],
+  "error_message": "Failed to converge within iteration limit"
+}
